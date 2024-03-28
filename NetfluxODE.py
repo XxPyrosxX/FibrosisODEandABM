@@ -292,7 +292,7 @@ def ODEfunc(t, y, tau, ymax, w, n, EC50):
 
     kdep = 0.0056
     kdeg = 0.0035
-    dydt[Collagen] = kdep * (CImRNA + CIIImRNA) - kdeg
+    dydt[Collagen] = kdep * (CImRNA + CIIImRNA) - kdeg*Collagen
 
     return dydt
 
