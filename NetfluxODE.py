@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def ODEfunc(t, y, tau, ymax, w, n, EC50):
     AngII = 0
     AT1R = 1
@@ -158,6 +159,7 @@ def ODEfunc(t, y, tau, ymax, w, n, EC50):
     dydt[IL6] = (OR(w[3], OR(AND(w[14], [act(y[CREB], w[14], n[14], EC50[14]), act(y[CBP], w[14], n[14], EC50[14])]),
                              OR(act(y[NFKB], w[15], n[15], EC50[15]), act(y[AP1], w[16], n[16], EC50[16])))) * ymax[
                      IL6] - y[IL6]) / tau[IL6]
+    #  dydt(IL6) = (OR(act(y(inputIL6),rpar(:,15)),act(y(IL6mRNA),rpar(:,31)))*ymax(IL6) - y(IL6))/tau(IL6);
     dydt[gp130] = (act(y[IL6], w[21], n[21], EC50[21]) * ymax[gp130] - y[gp130]) / tau[gp130]
     dydt[STAT] = (act(y[gp130], w[28], n[28], EC50[28]) * ymax[STAT] - y[STAT]) / tau[STAT]
     dydt[IL1] = (w[4] * ymax[IL1] - y[IL1]) / tau[IL1]
@@ -274,25 +276,24 @@ def ODEfunc(t, y, tau, ymax, w, n, EC50):
     ksec = 23700
     kdeg = 0.0096
     kact = 0.045
-    dydt[latentTGFB_ABM] = kgen + ksec * latentTGFB - kdeg * latentTGFB_ABM - kact * latentTGFB_ABM
+    dydt[latentTGFB_ABM] = kgen + ksec * y[latentTGFB] - kdeg * y[latentTGFB_ABM] - kact * y[latentTGFB_ABM]
 
     kgen = 4847
     kdeg = 0.277
-    dydt[IL1_ABM] = kgen - kdeg * IL1_ABM
+    dydt[IL1_ABM] = kgen - kdeg * y[IL1_ABM]
 
     kgen = 256000
     ksec = 79360
     kdeg = 0.277
-    dydt[IL6_ABM] = kgen + ksec * IL6 - kdeg * IL6_ABM
-
+    dydt[IL6_ABM] = kgen + ksec * y[IL6] - kdeg * y[IL6_ABM]
 
     kgen = 895.4
     kdeg = 1.386
-    dydt[TNFa_ABM] = kgen - kdeg * TNFa_ABM
+    dydt[TNFa_ABM] = kgen - kdeg * y[TNFa_ABM]
 
-    kdep = 0.0056
-    kdeg = 0.0035
-    dydt[Collagen] = kdep * (CImRNA + CIIImRNA) - kdeg*Collagen
+    kdep_c = 0.0056
+    kdeg_c = 0.0035
+    dydt[Collagen] = kdep_c * (y[CImRNA] + y[CIIImRNA]) - kdeg_c * y[Collagen]
 
     return dydt
 
